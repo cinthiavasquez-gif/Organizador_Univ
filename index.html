@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Mi Agenda U</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#3157a6" id="meta-theme-color">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Agenda U">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="classic">
+  <div class="app">
+    
+    <header>
+      <div class="header-info">
+        <h1 id="title">🎓 Mi Agenda U</h1>
+        <p id="subtitle">Tu vida universitaria, organizada.</p>
+      </div>
+      <div class="badge" id="badge">Estudiante</div>
+    </header>
+
+    <main class="content">
+      <!-- INICIO -->
+      <section id="inicio" class="view active">
+        <div class="section-title">
+          <h2 id="hello">¡Hola! 👋</h2>
+          <button class="primary" onclick="openTaskModal()">+ Nueva tarea</button>
+        </div>
+        
+        <div class="grid">
+          <div class="card stat-card">
+            <span class="stat-icon">📝</span>
+            <div>
+              <small>Pendientes</small>
+              <div class="big" id="pending">0</div>
+            </div>
+          </div>
+          <div class="card stat-card">
+            <span class="stat-icon">📚</span>
+            <div>
+              <small>Materias</small>
+              <div class="big" id="count">0</div>
+            </div>
+          </div>
+          <div class="card stat-card full-width">
+            <div>
+              <small>Progreso de tareas</small>
+              <div class="big" id="pct">0%</div>
+            </div>
+            <div class="progress"><span id="bar"></span></div>
+          </div>
+        </div>
+
+        <div class="card mood-card">
+          <h3>💭 ¿Cómo te sientes hoy?</h3>
+          <p class="muted">Toca para registrar tu estado:</p>
+          <div class="moods" id="moods"></div>
+        </div>
+
+        <div class="card quote-card">
+          <h3>💌 Frase del día</h3>
+          <p id="quote"></p>
+        </div>
+
+        <h3>📌 Próximas entregas</h3>
+        <div class="list" id="upcoming"></div>
+
+        <h3>🏆 Mis logros</h3>
+        <div class="grid achievements-grid" id="achievements"></div>
+      </section>
+
+      <!-- MATERIAS -->
+      <section id="materias" class="view">
+        <div class="section-title">
+          <h2>📚 Mis materias</h2>
+          <button class="primary" onclick="openSubjectModal()">+ Agregar</button>
+        </div>
+        <div class="list" id="subjects"></div>
+      </section>
+
+      <!-- TAREAS -->
+      <section id="tareas" class="view">
+        <div class="section-title">
+          <h2>📝 Mis tareas</h2>
+          <button class="primary" onclick="openTaskModal()">+ Nueva</button>
+        </div>
+        <div class="list" id="tasks"></div>
+      </section>
+
+      <!-- FOCUS MODE -->
+      <section id="focus" class="view">
+        <div class="card focus-card">
+          <h2>🍅 Focus Mode</h2>
+          <p class="muted">Mantén la concentración sin distracciones</p>
+          <div class="timer" id="timer">25:00</div>
+          <div class="timer-controls">
+            <button class="primary btn-lg" id="timerBtn" onclick="toggleTimer()">▶ Comenzar</button>
+            <button class="btn-lg" onclick="resetTimer()">↺ Reiniciar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PERFIL -->
+      <section id="perfil" class="view">
+        <div class="card">
+          <h2>👤 Mi Perfil</h2>
+          <label>Tu nombre</label>
+          <input id="name" placeholder="Ej: Ana María">
+          <label>Tu carrera / grado</label>
+          <input id="career" placeholder="Ej: Ingeniería / Bachillerato">
+          <button class="primary full-btn" onclick="saveProfile()">Guardar Cambios</button>
+        </div>
+
+        <div class="card" style="margin-top:16px;">
+          <h2>🎨 Tema de la App</h2>
+          <p class="muted">Personaliza la interfaz a tu gusto:</p>
+          <div class="themeBtns">
+            <button class="themeBtn" onclick="setTheme('classic')">🎓 Clásico</button>
+            <button class="themeBtn" onclick="setTheme('girly')">🎀 Girly</button>
+            <button class="themeBtn" onclick="setTheme('dark')">🌙 Dark</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- NAVEGACIÓN INFERIOR (BOTTOM NAV) -->
+    <nav class="bottom-nav">
+      <button class="nav-btn active" onclick="show('inicio', this)">
+        <span class="icon">🏠</span>
+        <span class="label">Inicio</span>
+      </button>
+      <button class="nav-btn" onclick="show('materias', this)">
+        <span class="icon">📚</span>
+        <span class="label">Materias</span>
+      </button>
+      <button class="nav-btn" onclick="show('tareas', this)">
+        <span class="icon">📝</span>
+        <span class="label">Tareas</span>
+      </button>
+      <button class="nav-btn" onclick="show('focus', this)">
+        <span class="icon">🍅</span>
+        <span class="label">Focus</span>
+      </button>
+      <button class="nav-btn" onclick="show('perfil', this)">
+        <span class="icon">👤</span>
+        <span class="label">Perfil</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- MODAL FLOTANTE (SUSTITUYE A LOS PROMPT NATIVOS) -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <h3 id="modalTitle">Agregar</h3>
+      <div id="modalBody"></div>
+      <div class="modal-actions">
+        <button onclick="closeModal()">Cancelar</button>
+        <button class="primary" id="modalConfirmBtn">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTIFICACIÓN EN PANTALLA (TOAST) -->
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
